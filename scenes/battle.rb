@@ -1,11 +1,11 @@
-class Field
-  def initialize
+class Battle
+  def initialize    
   end
 
   class << self
     def update
       system("cls")
-      Scene.next if Key.down?(Key::RETURN)
+      Scene.close if Key.down?(Key::RETURN)
       Scene.back if Key.down?(Key::ESCAPE)
     end
 
@@ -14,4 +14,4 @@ class Field
     end
   end
 end
-    
+      

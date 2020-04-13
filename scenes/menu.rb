@@ -1,5 +1,5 @@
-class Field
-  def initialize
+class Menu
+  def initialize    
   end
 
   class << self
@@ -10,8 +10,7 @@ class Field
     end
 
     def draw
-      puts "field!"
+      puts "menu!"
     end
   end
 end
-    

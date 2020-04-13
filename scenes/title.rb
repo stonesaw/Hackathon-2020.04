@@ -1,15 +1,48 @@
 class Title
   def initialize
+    @@display = Map.new(width: 20, height: 20, default_text: "・")
+    @@title = Sprite.new(3, 2, "ABE-QUET")
+    @@msg_start = "START"
+    @@start = Sprite.new(4, 5, @@msg_start)
+    @@msg_option = "OPTION"
+    @@option = Sprite.new(4, 7, @@msg_option)
+    @@cursor = 0
   end
 
   class << self
     def update
       system("cls")
       Scene.next if Key.down?(Key::RETURN)
-    end
 
+      if Key.down?(Key::DOWN) && @@cursor < 1
+        @@cursor += 1
+      elsif Key.down?(Key::UP) && @@cursor > 0
+        @@cursor -= 1
+      end
+
+      if @@cursor == 0
+        @@msg_start = "> START "
+        @@msg_option = "  OPTION"
+      else
+        @@msg_start = "  START "
+        @@msg_option = "> OPTION"
+      end
+
+      @@start.text = @@msg_start
+      @@option.text = @@msg_option
+
+      if Key.down?(Key::RETURN)
+        if @@cursor == 0
+          # 名前の入力
+          Scene.next(init: true)
+        else
+          puts "option"
+        end
+      end
+    end
+    
     def draw
-      puts "title!"
+      @@display.draw([@@title, @@start, @@option])
     end
   end
 end

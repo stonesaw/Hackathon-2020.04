@@ -17,7 +17,7 @@ Scene.new([
 ])
 
 class Player
-  attr_accessor :name, :money, :hp, :max_hp, :attack, :mp, :max_mp
+  attr_accessor :name, :money, :hp, :max_hp, :attack, :mp, :max_mp, :block
   
   def initialize(name)
     @name = name

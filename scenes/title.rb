@@ -12,12 +12,19 @@ class Title
   class << self
     def update
       system("cls")
-      Scene.next if Key.down?(Key::RETURN)
-
       if Key.down?(Key::DOWN) && @@cursor < 1
         @@cursor += 1
       elsif Key.down?(Key::UP) && @@cursor > 0
         @@cursor -= 1
+      end
+
+      if Key.down?(Key::RETURN)
+        if @@cursor == 0
+          # 名前の入力
+          Scene.next(init: true)
+        elsif @@cursor == 1
+          puts "option"
+        end
       end
 
       if @@cursor == 0
@@ -31,14 +38,6 @@ class Title
       @@start.text = @@msg_start
       @@option.text = @@msg_option
 
-      if Key.down?(Key::RETURN)
-        if @@cursor == 0
-          # 名前の入力
-          Scene.next(init: true)
-        else
-          puts "option"
-        end
-      end
     end
     
     def draw

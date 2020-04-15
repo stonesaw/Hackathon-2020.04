@@ -93,12 +93,14 @@ class Shop
       {"hp" => 0, "attack" => 0 ,"mp" => 0, "block" => 90},
       {"hp" => 0, "attack" => 300 ,"mp" => 0, "block" => 0}
     ]
-    @@mon_p = Sprite.new(1, 14, "所持金  ここにGOLD　価格 #{@@m_num[@@cursol.y - 1]}GOLD")
-    @@expla = Sprite.new(1, 15, @@ex_a[@@cursol.y - 1])
-    @@eff_hp = Sprite.new(1, 16, "HP #{@@eff_t[@@cursol.y - 1]["hp"]}")
-    @@eff_attack = Sprite.new(5, 16, "ATTACK #{@@eff_t[@@cursol.y - 1]["attack"]}")
-    @@eff_mp = Sprite.new(10, 17, "MP#{@@eff_t[@@cursol.y - 1]["mp"]}")
-    @@eff_block = Sprite.new(15, 17, "BLOCK#{@@eff_t[@@cursol.y - 1]["block"]}")
+    @@m_have = Sprite.new(1, 14, "所持金   #{$player.money}GOLD")
+    @@m_value = Sprite.new(10, 14, "価格 #{$item_list[@@cursol.y - 1]["value"]}GOLD")
+    @@mon_
+    @@expla = Sprite.new(1, 15, $item_list[@@cursol.y - 1]["ex"])
+    @@eff_hp = Sprite.new(1, 16, "HP #{$item_list[@@cursol.y - 1]["effect"]["hp"]}")
+    @@eff_attack = Sprite.new(5, 16, "ATTACK #{$item_list[@@cursol.y - 1]["effect"]["attack"]}")
+    @@eff_mp = Sprite.new(10, 17, "MP#{$item_list[@@cursol.y - 1]["effect"]["mp"]}")
+    @@eff_block = Sprite.new(15, 17, "BLOCK#{$item_list[@@cursol.y - 1]["effect"]["block"]}")
     @@sel_msg = Sprite.new(1, 16, "購入しますか? ")
     @@cho_y = Sprite.new(2, 17, "はい")
     @@cho_n = Sprite.new(12, 17, "いいえ")
@@ -106,6 +108,7 @@ class Shop
     @@msg = Sprite.new(1, 18, "  ")
     @@sel_f = 0
     @@buy_f = 0
+    @@bu_f = 0
   end
 
   class << self
@@ -125,8 +128,9 @@ class Shop
           @@sel_f = 1
         elsif @@buy_f == 0
           if @@cursol_2.x == 1
-            if true
+            if $player.money >= @@m_num[@@cursol.y - 1]
               @@msg.text = "購入しました"
+              @@bu_f = 1
             else
               @@msg.text = "お金が足りません"
             end
@@ -137,49 +141,62 @@ class Shop
           @@cursol_2.x = 1
         else
           @@msg.text = "  "
+          $player.money -= @@m_num[@@cursol.y - 1] if @@bu_f == 1
+          @@bu_f = 0
           @@buy_f = 0
           @@sel_f = 0
         end
       end
 
-      @@expla.text = @@ex_a[@@cursol.y - 1]
-      if @@m_num[@@cursol.y - 1] >= 1000
-        @@mon_p.text = "所持金　ここにGOLD　価格　#{@@m_num[@@cursol.y - 1]}GOLD"
+      @@expla.text = $item_list[@@cursol.y - 1]["ex"]
+
+      if $player.money >= 1000
+        @@m_have.text = "所持金　#{$player.money}GOLD"
+      elsif $player.money >= 100
+        @@m_have.text = "所持金　 #{$player.money}GOLD"
+      elsif $player.money >= 10
+        @@m_have.text = "所持金　  #{$player.money}GOLD"
       else
-        @@mon_p.text = "所持金　ここにGOLD　価格　 #{@@m_num[@@cursol.y - 1]}GOLD"
+        @@m_have.text = "所持金　   #{$player.money}GOLD"
+      end
+
+      if $item_list[@@cursol.y - 1]["value"] >= 1000
+        @@m_value.text = "価格　#{$item_list[@@cursol.y - 1]["value"]}GOLD"
+      else
+        @@m_value.text = "価格　 #{$item_list[@@cursol.y - 1]["value"]}GOLD"
       end
 
       if @@sel_f == 0
-        if @@eff_t[@@cursol.y - 1]["hp"] < 10
-          @@eff_hp = Sprite.new(1, 16, "HP   #{@@eff_t[@@cursol.y - 1]["hp"]}")
-        elsif @@eff_t[@@cursol.y - 1]["hp"] < 100
-          @@eff_hp = Sprite.new(1, 16, "HP  #{@@eff_t[@@cursol.y - 1]["hp"]}")
+        if $item_list[@@cursol.y - 1]["effect"]["hp"] < 10
+          @@eff_hp = Sprite.new(1, 16, "HP   #{$item_list[@@cursol.y - 1]["effect"]["hp"]}")
+        elsif $item_list[@@cursol.y - 1]["effect"]["hp"] < 100
+          @@eff_hp = Sprite.new(1, 16, "HP  #{$item_list[@@cursol.y - 1]["effect"]["hp"]}")
         else
-          @@eff_hp = Sprite.new(1, 16, "HP #{@@eff_t[@@cursol.y - 1]["hp"]}")
+          @@eff_hp = Sprite.new(1, 16, "HP #{$item_list[@@cursol.y - 1]["effect"]["hp"]}")
         end
 
-        if @@eff_t[@@cursol.y - 1]["attack"] < 10
-          @@eff_attack = Sprite.new(9, 16, "ATTACK   #{@@eff_t[@@cursol.y - 1]["attack"]}")
-        elsif @@eff_t[@@cursol.y - 1]["attack"] < 100
-          @@eff_attack = Sprite.new(9, 16, "ATTACK  #{@@eff_t[@@cursol.y - 1]["attack"]}")
+        if $item_list[@@cursol.y - 1]["effect"]["attack"] < 10
+          @@eff_attack = Sprite.new(9, 16, "ATTACK   #{$item_list[@@cursol.y - 1]["effect"]["attack"]}")
+        elsif $item_list[@@cursol.y - 1]["effect"]["attack"] < 100
+          @@eff_attack = Sprite.new(9, 16, "ATTACK  #{$item_list[@@cursol.y - 1]["effect"]["attack"]}")
         else
-          @@eff_attack = Sprite.new(9, 16, "ATTACK #{@@eff_t[@@cursol.y - 1]["attack"]}")
+          @@eff_attack = Sprite.new(9, 16, "ATTACK #{$item_list[@@cursol.y - 1]["effect"]["attack"]}")
         end
 
-        if @@eff_t[@@cursol.y - 1]["mp"] < 10
-          @@eff_mp = Sprite.new(1, 17, "MP   #{@@eff_t[@@cursol.y - 1]["mp"]}")
-        elsif @@eff_t[@@cursol.y - 1]["mp"] < 100
-          @@eff_mp = Sprite.new(1, 17, "MP  #{@@eff_t[@@cursol.y - 1]["mp"]}")
+        if $item_list[@@cursol.y - 1]["effect"]["mp"] < 10
+          @@eff_mp = Sprite.new(1, 17, "MP   #{$item_list[@@cursol.y - 1]["effect"]["mp"]}")
+        elsif $item_list[@@cursol.y - 1]["effect"]["mp"] < 100
+          @@eff_mp = Sprite.new(1, 17, "MP  #{$item_list[@@cursol.y - 1]["effect"]["mp"]}")
         else
-          @@eff_mp = Sprite.new(1, 17, "MP #{@@eff_t[@@cursol.y - 1]["mp"]}")
+          @@eff_mp = Sprite.new(1, 17, "MP #{$item_list[@@cursol.y - 1]["effect"]["mp"]}")
         end
 
-        if @@eff_t[@@cursol.y - 1]["block"] < 10
-          @@eff_block = Sprite.new(9, 17, "BLOCK    #{@@eff_t[@@cursol.y - 1]["block"]}")
-        elsif @@eff_t[@@cursol.y - 1]["block"] < 100
-          @@eff_block = Sprite.new(9, 17, "BLOCK   #{@@eff_t[@@cursol.y - 1]["block"]}")
+        if $item_list[@@cursol.y - 1]["effect"]["block"] < 10
+          @@eff_block = Sprite.new(9, 17, "BLOCK    #{$item_list[@@cursol.y - 1]["effect"]["block"]}")
+        elsif $item_list[@@cursol.y - 1]["effect"]["block"] < 100
+          @@eff_block = Sprite.new(9, 17, "BLOCK   #{$item_list[@@cursol.y - 1]["effect"]["block"]}")
         else
-          @@eff_block = Sprite.new(9, 17, "BLOCK  #{@@eff_t[@@cursol.y - 1]["block"]}")
+          @@eff_block = Sprite.new(9, 17, "BLOCK  #{$item_list[@@cursol.y - 1]["effect"]["block"]}")
         end
       end
 
@@ -189,9 +206,9 @@ class Shop
 
     def draw
       if @@sel_f == 0
-        @@display.draw([@@item, @@money, @@cursol, @@expla, @@mon_p, @@eff_hp, @@eff_attack, @@eff_mp, @@eff_block])
+        @@display.draw([@@item, @@money, @@cursol, @@expla, @@m_have, @@m_value, @@eff_hp, @@eff_attack, @@eff_mp, @@eff_block])
       else
-        @@display.draw([@@item, @@money, @@cursol, @@expla, @@mon_p, @@sel_msg, @@cho_y, @@cho_n, @@cursol_2, @@msg])
+        @@display.draw([@@item, @@money, @@cursol, @@expla, @@m_have, @@m_value, @@sel_msg, @@cho_y, @@cho_n, @@cursol_2, @@msg])
       end
     end
   end

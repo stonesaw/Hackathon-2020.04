@@ -8,6 +8,8 @@ $enemies_data = open('./data/enemies.json') do |io|
   JSON.load(io)
 end
 require_relative './data/random-names'
+require_relative './data/items'
+
 
 require_relative './scenes/title'
 require_relative './scenes/field'

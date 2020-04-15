@@ -38,15 +38,15 @@ class Field
       Scene.back if Key.down?(Key::ESCAPE)
 
       if @@dis_flag == 0
-        @@player.x += 1 if Key.down?(Key::RIGHT) && !(@@player.touch_right(@@king)) && !(@@player.touch_right(@@wall))
-        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left(@@king)) && !(@@player.touch_left(@@wall))
-        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot(@@king)) && !(@@player.touch_foot(@@wall))
-        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head(@@king)) && !(@@player.touch_head(@@wall))
+        @@player.x += 1 if Key.down?(Key::RIGHT) && !(@@player.touch_right([@@king] + @@wall))
+        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left([@@king] + @@wall))
+        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@king] + @@wall))
+        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@king] + @@wall))
       else
-        @@player.x += 1 if Key.down?(Key::RIGHT)  && !(@@player.touch_right([@@maou, @@hotel]))&& !(@@player.touch_right(@@mienai))
-        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left([@@maou, @@hotel])) && !(@@player.touch_left(@@mienai))
-        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@maou, @@hotel])) && !(@@player.touch_foot(@@mienai))
-        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@maou, @@hotel])) && !(@@player.touch_head(@@mienai))
+        @@player.x += 1 if Key.down?(Key::RIGHT)  && !(@@player.touch_right([@@maou, @@hotel] + @@mienai))
+        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left([@@maou, @@hotel] + @@mienai))
+        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@maou, @@hotel] + @@mienai))
+        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@maou, @@hotel] + @@mienai))
       end
 
       if @@dis_flag == 0 && @@player.y == 20

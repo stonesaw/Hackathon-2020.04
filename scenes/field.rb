@@ -7,7 +7,6 @@ class Field
     @@maou = Sprite.new(10, 19, "魔")
     @@player = Sprite.new(9, 9, "〇")
     @@castle = Sprite.new(10, 0, "城")
-    # @@hotel = Sprite.new(0, 0, "宿")
     @@shop = Sprite.new(19, 0, "店")
     @@wall = []
     @@d_castle.width.times do |i|
@@ -43,10 +42,10 @@ class Field
         @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@king] + @@wall))
         @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@king] + @@wall))
       else
-        @@player.x += 1 if Key.down?(Key::RIGHT)  && !(@@player.touch_right([@@maou, @@hotel] + @@mienai))
-        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left([@@maou, @@hotel] + @@mienai))
-        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@maou, @@hotel] + @@mienai))
-        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@maou, @@hotel] + @@mienai))
+        @@player.x += 1 if Key.down?(Key::RIGHT)  && !(@@player.touch_right([@@maou] + @@mienai))
+        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left([@@maou] + @@mienai))
+        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@maou] + @@mienai))
+        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@maou] + @@mienai))
       end
 
       if @@dis_flag == 0 && @@player.y == 20
@@ -75,7 +74,7 @@ class Field
       if @@dis_flag == 0
         @@d_castle.draw([@@king, @@wall, @@player])
       else
-        @@d_jie.draw([@@player, @@castle, @@maou, @@hotel, @@shop])
+        @@d_jie.draw([@@player, @@castle, @@maou, @@shop])
       end
     end
   end

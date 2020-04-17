@@ -7,7 +7,7 @@ class Field
     @@maou = Sprite.new(10, 19, "魔")
     @@player = Sprite.new(9, 9, "〇")
     @@castle = Sprite.new(10, 0, "城")
-    @@hotel = Sprite.new(0, 0, "宿")
+    # @@hotel = Sprite.new(0, 0, "宿")
     @@shop = Sprite.new(19, 0, "店")
     @@wall = []
     @@d_castle.width.times do |i|
@@ -34,8 +34,8 @@ class Field
   class << self
     def update
       system("cls")
-      Scene.next if Key.down?(Key::RETURN)
-      Scene.back if Key.down?(Key::ESCAPE)
+      # To Scene-Menu
+      Scene.next(init: true) if Key.down?(Key::ESCAPE)
 
       if @@dis_flag == 0
         @@player.x += 1 if Key.down?(Key::RIGHT) && !(@@player.touch_right([@@king] + @@wall))
@@ -63,9 +63,12 @@ class Field
 
       if @@dis_flag == 1 && @@player.x == @@shop.x && @@player.y == @@shop.y
         @@player.x = @@shop.x - 1
-        Scene.next
-        Scene.next(init: true)
+        # To Scene-Shop
+        Scene.select(3, init: true)
       end
+
+      # To Scene-Battele
+      Scene.select(4, init: true) if Key.down?(Key::SPACE)
     end
 
     def draw

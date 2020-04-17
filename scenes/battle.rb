@@ -80,7 +80,6 @@ class Battle
   class << self
     def update
       system("cls")
-      Scene.back if Key.down?(Key::ESCAPE)
       # $playerはinitializeで使えないため
       if @@my_init == 0
         @@show_enemy.text = text_persentage(@@enemy1)
@@ -146,7 +145,8 @@ class Battle
       @@msg.text =  ["#{text_control(@@enemy1.name)}は", "いい気分になって帰っていった... "]
       msg_draw()
       @@esc_enemy_attack = 1
-      Scene.select(1)
+      # To Scene-Field
+      Scene.select(1, init: false)
     end
 
     # 行動 - アイテム
@@ -164,7 +164,8 @@ class Battle
     # 行動 - 逃げる
     def escape
       puts "うまく逃げ切れた"
-      Scene.select(1)
+      # To Scene-Field
+      Scene.select(1, init: false)
       @@esc_enemy_attack = 1
     end
 
@@ -194,12 +195,14 @@ class Battle
                     "#{text_control(@@enemy1.money)}GOLDを手に入れた"]
       msg_draw()
       system("cls")
-      Scene.select(1)
+      # To Scene-Fielsd
+      Scene.select(1, init: false)
     end
 
     def gameover
       @@msg.text = "ヤラレチャッタ！"
       msg_draw()
+      # To Scene-Title
       Scene.select(0)
     end
 

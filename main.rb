@@ -4,12 +4,11 @@ require 'json'
 require_relative './Monochrome-Ruby'
 require_relative './scene-eitor'
 
-$enemies_data = open('./data/enemies.json') do |io|
-  JSON.load(io)
+$enemies_data = open('./data/enemies.json') do |i|
+  JSON.load(i)
 end
 require_relative './data/random-names'
 require_relative './data/items'
-
 
 require_relative './scenes/title'
 require_relative './scenes/field'
@@ -26,9 +25,9 @@ Scene.new([
 ])
 
 class Player
-  attr_accessor :name, :money, :hp, :max_hp, :mp, :max_mp, :attack, :block, :agility
+  attr_accessor :name, :money, :hp, :max_hp, :mp, :max_mp, :attack, :block, :agility, :item_list
   
-  def initialize(name = "yusya ")
+  def initialize(name)
     @name = name
     @money = 1000
     @max_hp = 100
@@ -38,10 +37,9 @@ class Player
     @attack = 20
     @block = 10
     @agility = 20
+    @item_list = []
   end
 end
-
-$player = Player.new
 
 loop do
   Key.update

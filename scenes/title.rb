@@ -20,7 +20,10 @@ class Title
 
       if Key.down?(Key::RETURN)
         if @@cursor == 0
-          # 名前の入力
+          print "名前を入力してください。\n> "
+          name = gets.chomp.to_s
+          name = "勇者" if name == ""
+          $player = Player.new(name)
           Scene.next(init: true)
         elsif @@cursor == 1
           puts "option"

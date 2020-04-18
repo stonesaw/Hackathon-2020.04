@@ -121,6 +121,9 @@ class Menu
               @@dr_f = 4
             else
               open('data.txt', 'w'){ |f|
+                f.puts "#{Field.dis_flag}"
+                f.puts "#{Field.player.x}"
+                f.puts "#{Field.player.y}"
                 f.puts "#{$player.name}"
                 f.puts "#{$player.money}"
                 f.puts "#{$player.max_hp}"
@@ -142,6 +145,9 @@ class Menu
         elsif @@dr_f == 4
           if @@cursol_2.y == 3
             open('data.txt', 'w'){ |f|
+              f.puts "#{Field.dis_flag}"
+              f.puts "#{Field.player.x}"
+              f.puts "#{Field.player.y}"
               f.puts "#{$player.name}"
               f.puts "#{$player.money}"
               f.puts "#{$player.max_hp}"

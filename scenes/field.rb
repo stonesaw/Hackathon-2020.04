@@ -2,10 +2,10 @@ class Field
   def initialize
     @@d_castle = Map.new(width: 20, height: 20, default_text:"・")
     @@d_jie = Map.new(width: 20, height: 20, default_text:"・")
-    @@dis_flag = 0
+    @@dis_flag = $save_data[0]
     @@king = Sprite.new(9, 6, "王")
     @@maou = Sprite.new(10, 19, "魔")
-    @@player = Sprite.new(9, 9, "〇")
+    @@player = Sprite.new($save_data[1], $save_data[2], "〇")
     @@castle = Sprite.new(10, 0, "城")
     @@shop = Sprite.new(19, 0, "店")
     @@wall = []
@@ -68,6 +68,14 @@ class Field
 
       # To Scene-Battele
       Scene.select(4, init: true) if Key.down?(Key::SPACE)
+    end
+
+    def dis_flag
+      @@dis_flag
+    end
+
+    def player
+      @@player
     end
 
     def draw

@@ -1,3 +1,5 @@
+require "fileutils"
+
 class Menu
   def initialize
     @@display = Map.new(map: [
@@ -105,6 +107,20 @@ class Menu
           if @@cursol.y == 1
             @@dr_f = 1
           elsif @@cursol.y == 2
+            open('data.txt', 'w'){ |f|
+              f.puts "#{$player.name}"
+              f.puts "#{$player.money}"
+              f.puts "#{$player.max_hp}"
+              f.puts "#{$player.hp}"
+              f.puts "#{$player.max_mp}"
+              f.puts "#{$player.mp}"
+              f.puts "#{$player.attack}"
+              f.puts "#{$player.block}"
+              f.puts "#{$player.agility}"
+              ($player.item_list).size.times do |i|
+                f.puts "#{$player.item_list[i]}"
+              end
+            }
             @@dr_f = 2
           else
             exit

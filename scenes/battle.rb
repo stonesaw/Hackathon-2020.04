@@ -5,12 +5,17 @@ class Enemy
     if $enemies_data.include?(kind)
       @kind = kind
     else
-      raise ArgumentError.new("'#{kind}' is undefined in <enemies_data>")
+      raise ArgumentError.new("'#{kind}' is undefined in 'data/enemies_data.json'")
     end
-    @name = ""
+
     if @kind == "slime"
       @name = "スラ" + $random_names_data[rand($random_names_data.length - 1)]
+    elsif @kind == "maou"
+      @name = "魔王"
+    else
+      @name = "NoName"
     end
+    
     @hp = data_match('hp')
     @mp = data_match('mp')
     @max_hp = @hp
@@ -68,11 +73,17 @@ class Battle
     @@com_item = Sprite.new(12, 15, "アイテム")
     @@com_escape = Sprite.new(12, 16, "逃げる")
     @@com_ex = Sprite.new(5, 18, "選択:方向キー, 決定:エンター")
-    @@msg = Sprite.new(3, 15, "text")
-    @@drawed = []
-    @@enemy1 = Enemy.new("slime")
+    @@msg = Sprite.new(3, 15, "msg ")
+    @@item_cursor = Sprite.new(2, 15, "◎")
+    @@item_msg = Sprite.new(3, 14, "item")
     @@show_enemy = Sprite.new(7, 1, ["ene", "HP||"])
     @@show_player = Sprite.new(2, 10, ["yu", "HP||"])
+    if Field.enemy == "nomal"
+      @@enemy1 = Enemy.new("slime")
+    elsif Field.enemy == "maou"
+      @@enemy1 = Enemy.new("maou")
+    end
+    @@drawed = []
     @@my_init = 0
     @@esc_enemy_attack = 0
   end
@@ -112,6 +123,7 @@ class Battle
         elsif @@cursor.x == @@com_item.x - 2 && @@cursor.y == @@com_item.y
           item() if $player.hp > 0
         elsif @@cursor.x == @@com_escape.x - 2 && @@cursor.y == @@com_escape.y
+          enemy_attack() if $player.agility < @@enemy1.agility
           escape() if $player.hp > 0
         end
         
@@ -119,7 +131,7 @@ class Battle
           enemy_attack() if $player.agility >= @@enemy1.agility
         end
       else
-        @@display.draw(@@drawed << [@@cursor, @@com_attack, @@com_greet, @@com_item, @@com_escape, @@com_ex])
+        @@display.draw(@@drawed + [@@cursor, @@com_attack, @@com_greet, @@com_item, @@com_escape, @@com_ex])
       end
     end
 
@@ -127,21 +139,16 @@ class Battle
       # @@display.draw(@@drawed)
       # p @@enemy1
       # p $player
+      p @@msg
     end
 
     # 行動 - 攻撃
     def attack
-      damage = $player.attack - (@@enemy1.block * rand(0.7..1)).round
-      damage = 0 if damage <= 0
-      @@enemy1.hp -= damage
-
-      damage = " #{damage}" if "#{damage}".length == 1
-      
-      @@msg.text = ["#{text_control($player.name)}の攻撃！", "#{text_control(@@enemy1.name)}に#{damage}のダメージ！"]
-      if @@enemy1.hp > 0
-        @@msg.text += ["#{text_control(@@enemy1.name)}のHP残り#{text_control(@@enemy1.hp)}"]
+      if @@enemy1.kind == "maou"
+        motion_attack($player, @@enemy1, exception_damage: 0)
+      else
+        motion_attack($player, @@enemy1)
       end
-      msg_draw()
 
       defeat() if @@enemy1.hp <= 0
     end
@@ -150,11 +157,18 @@ class Battle
     def greet
       @@msg.text = "#{text_control($player.name)}は大きな声であいさつをした"
       msg_draw()
-      @@msg.text =  ["#{text_control(@@enemy1.name)}は", "いい気分になって帰っていった... "]
-      msg_draw()
-      @@esc_enemy_attack = 1
-      # To Scene-Field
-      Scene.select(1, init: false)
+
+      if @@enemy1.kind == "maou"
+        motion_attack($player, @@enemy1)
+        defeat() if @@enemy1.hp <= 0
+      else
+        @@msg.text =  ["#{text_control(@@enemy1.name)}は", "いい気分になって帰っていった... "]
+        msg_draw()
+        system("cls")
+        @@esc_enemy_attack = 1
+        # To Scene-Field
+        Scene.select(1, init: false)
+      end
     end
 
     # 行動 - アイテム
@@ -164,38 +178,62 @@ class Battle
         msg_draw()
         @@esc_enemy_attack = 1
       else
-        @@msg.text = "どのアイテムを使いますか"
-        msg_draw()
+        @@item_cursor_pos = 0
+        loop do
+          Key.update
+          system("cls")
+
+          break if Key.down?(Key::ESCAPE)
+          @@item_msg.text = ["どのアイテムを使いますか"]
+          4.times do |i|
+            break if $player.item_list.length <= @@item_cursor_pos + i
+            name = $player.item_list[@@item_cursor_pos + i]['name']
+            num = $player.item_list[@@item_cursor_pos + i]['num']
+            (16 - text_width(name)).times do
+              name += " "
+            end
+            @@item_msg.text = @@item_msg.text << "#{name}  ×  #{text_control(num)}"
+          end
+
+          if Key.down?(Key::UP)
+            if @@item_cursor.y > 15
+              @@item_cursor.y -= 1
+            elsif @@item_cursor_pos > 0
+              @@item_cursor_pos -= 1
+            end
+          elsif Key.down?(Key::DOWN)
+            if @@item_cursor.y < 18
+              @@item_cursor.y += 1
+            elsif @@item_cursor_pos < $player.item_list.length - 1
+              @@item_cursor_pos += 1
+            end
+          end
+
+          @@display.draw([@@item_msg, @@item_cursor])
+          p @@item_cursor_pos
+        end
       end
     end
 
     # 行動 - 逃げる
     def escape
-      puts "うまく逃げ切れた"
+      @@msg.text = "うまく逃げ切れた"
       msg_draw()
       # To Scene-Field
       Scene.select(1, init: false)
       @@esc_enemy_attack = 1
     end
 
+    # --- 敵の攻撃 ---
     def enemy_attack
       @@msg.text = "敵の攻撃"
       msg_draw()
 
-      damage = @@enemy1.attack - ($player.block * rand(0.7..1)).round
-      damage = 0 if damage <= 0
-      $player.hp -= damage
-
-      @@msg.text = ["#{text_control(@@enemy1.name)}の攻撃！", 
-                    "#{text_control($player.name)}に#{text_control(damage)}のダメージ！"]
-      if $player.hp > 0
-        @@msg.text += ["#{text_control($player.name)}のHP残り" + text_control($player.hp)]
-      end
-      msg_draw()
-
+      motion_attack(@@enemy1, $player)
       gameover() if $player.hp <= 0
     end
 
+    # --- 敵を倒したとき ---
     def defeat
       @@esc_enemy_attack = 1
       @@msg.text = "#{text_control(@@enemy1.name)}を倒した"
@@ -211,14 +249,34 @@ class Battle
       Scene.select(1, init: false)
     end
 
+    # --- 自分が死んだとき ---
     def gameover
       @@msg.text = "ヤラレチャッタ！"
       msg_draw()
+
       # To Scene-Field
       $player.money /= 2
       Scene.select(1, init: false)
     end
 
+    # --- 攻撃のベースメソッド ---
+    def motion_attack(from, to, exception_damage: -1)
+      if exception_damage == -1
+        damage = from.attack - (to.block * rand(0.7..1)).round
+        damage = 0 if damage <= 0
+        to.hp -= damage
+      else
+        damage = exception_damage
+        to.hp -= damage
+      end
+
+      damage = " #{damage}" if "#{damage}".length == 1      
+      @@msg.text = ["#{text_control(from.name)}の攻撃！", "#{text_control(to.name)}に#{damage}のダメージ！"]
+      @@msg.text += ["#{text_control(to.name)}のHP残り#{text_control(to.hp)}"] if to.hp > 0
+      msg_draw()
+    end
+
+    # --- メッセージの表示 ---
     def msg_draw(time = 20)
       @@show_enemy.text = text_persentage(@@enemy1)
       @@show_player.text = text_persentage($player)
@@ -228,10 +286,11 @@ class Battle
         
         system("cls")
         @@display.draw(@@drawed)
-        p i
+        # p i
       end
     end
 
+    # --- HP, MP のゲージを更新 ---
     def text_persentage(character)
       character.hp = 0 if character.hp < 0
       character.mp = 0 if character.mp < 0
@@ -249,6 +308,7 @@ class Battle
               "MP|#{mp_gauge}|"]
     end
 
+    # --- 文字の幅によって空白を追加 ---
     def text_control(text)
       text = text.to_s
       width = 0
@@ -260,10 +320,28 @@ class Battle
         elsif /\A[ -~。-゜]+\z/ =~ i# 半角
           width += 1
         else
-          width += 1
+          width += 2
         end
       end
       (width % 2) == 1 ? " " + text : text
     end
+
+    def text_width(text)
+      text = text.to_s
+      width = 0
+      text.scan(/./) do |i|
+        if /\A[ぁ-んー－]+\z/ =~ i# 全角ひらがな
+          width += 2
+        elsif /\A[ｧ-ﾝﾞﾟ]+\z/ =~ i# 半角型カタカナ
+          width += 1
+        elsif /\A[ -~。-゜]+\z/ =~ i# 半角
+          width += 1
+        else
+          width += 2
+        end
+      end
+      return width
+    end
+
   end
 end

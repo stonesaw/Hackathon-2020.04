@@ -69,7 +69,7 @@ class Shop
           if @@cursol_2.x == 1
             if $player.money >= $item_list[@@cursol.y - 1]['value']
               @@msg.text = "購入しました"
-              $player.item_list << $item_list[@@cursol.y - 1]
+              get_item($item_list[@@cursol.y - 1]['name'])
               @@bu_f = 1
             else
               @@msg.text = "お金が足りません"
@@ -136,5 +136,20 @@ class Shop
       end
       return text
     end
+
+    def get_item(name)
+      if $player.item_list.length == 0
+        $player.item_list << {'name' => name, 'num' => 1, 'data' => $item_list[@@cursol.y - 1]}
+      else
+        $player.item_list.length.times do |i|
+          if $player.item_list[i]['name'] == name
+            $player.item_list[i]['num'] += 1
+            return
+          end
+        end
+        $player.item_list << {'name' => name, 'num' => 1, 'data' => $item_list[@@cursol.y - 1]}
+      end
+    end
+
   end
 end

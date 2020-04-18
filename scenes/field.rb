@@ -28,6 +28,7 @@ class Field
       @@mienai << Sprite.new(-1, i, "■")
       @@mienai << Sprite.new(20, i, "■")
     end
+    @@enemy = "nomal"
   end
 
   class << self
@@ -35,6 +36,7 @@ class Field
       system("cls")
       # To Scene-Menu
       Scene.next(init: true) if Key.down?(Key::ESCAPE)
+      @@enemy = "nomal"
 
       if @@dis_flag == 0
         @@player.x += 1 if Key.down?(Key::RIGHT) && !(@@player.touch_right([@@king] + @@wall))
@@ -42,10 +44,10 @@ class Field
         @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@king] + @@wall))
         @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@king] + @@wall))
       else
-        @@player.x += 1 if Key.down?(Key::RIGHT)  && !(@@player.touch_right([@@maou] + @@mienai))
-        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left([@@maou] + @@mienai))
-        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot([@@maou] + @@mienai))
-        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head([@@maou] + @@mienai))
+        @@player.x += 1 if Key.down?(Key::RIGHT)  && !(@@player.touch_right(@@mienai))
+        @@player.x -= 1 if Key.down?(Key::LEFT) && !(@@player.touch_left(@@mienai))
+        @@player.y += 1 if Key.down?(Key::DOWN) && !(@@player.touch_foot(@@mienai))
+        @@player.y -= 1 if Key.down?(Key::UP) && !(@@player.touch_head(@@mienai))
       end
 
       if @@dis_flag == 0 && @@player.y == 20
@@ -67,6 +69,8 @@ class Field
       end
 
       if @@dis_flag == 1 && @@player === @@maou
+        @@enemy = "maou"
+        @@player.y -= 1
         Scene.select(4, init: true)
       end
 
@@ -84,6 +88,10 @@ class Field
 
     def player
       return @@player
+    end
+
+    def enemy
+      return @@enemy
     end
   end
 end

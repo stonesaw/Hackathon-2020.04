@@ -36,10 +36,10 @@ class Menu
     @@yes = Sprite.new(3, 3, "はい")
     @@no = Sprite.new(3, 4, "いいえ")
     @@item_list = []
-    $player.item_list.size.times do |i|
+    $player.item_list.length.times do |i|
       @@item_list << Sprite.new(2, i + 9, "#{$player.item_list[i]}")
     end
-    if $player.item_list.size == 0
+    if $player.item_list.length == 0
       @@item_list = Sprite.new(2, 9, "なし")
     end
     @@dr_f = 0
@@ -141,7 +141,7 @@ class Menu
                 f.puts "#{$player.attack}"
                 f.puts "#{$player.block}"
                 f.puts "#{$player.agility}"
-                ($player.item_list).size.times do |i|
+                ($player.item_list).length.times do |i|
                   f.puts "#{$player.item_list[i]}"
                 end
               }
@@ -165,7 +165,7 @@ class Menu
               f.puts "#{$player.attack}"
               f.puts "#{$player.block}"
               f.puts "#{$player.agility}"
-              ($player.item_list).size.times do |i|
+              ($player.item_list).length.times do |i|
                 f.puts "#{$player.item_list[i]}"
               end
             }

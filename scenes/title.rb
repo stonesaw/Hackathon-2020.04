@@ -38,6 +38,9 @@ class Title
             $player = Player.new("")
             if File.exist?("data.txt")
               File.open('data.txt', 'r'){ |f|
+                $save_data[0] = f.gets.to_i
+                $save_data[1] = f.gets.to_i
+                $save_data[2] = f.gets.to_i
                 $player.name = f.gets
                 $player.money = f.gets.to_i
                 $player.max_hp = f.gets.to_i
@@ -47,6 +50,11 @@ class Title
                 $player.attack = f.gets.to_i
                 $player.block = f.gets.to_i
                 $player.agility = f.gets.to_i
+                item = f.gets
+                while item != nil
+                  $player.item_list << item
+                  item = f.gets
+                end
               }
               Scene.next(init: true)
             else

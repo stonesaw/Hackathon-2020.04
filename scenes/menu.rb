@@ -32,9 +32,16 @@ class Menu
     @@sa_msg = Sprite.new(1, 1, "セーブしました")
     @@sa_che_1 = Sprite.new(2, 1, "既存のセーブデータがあります。")
     @@sa_che_2 = Sprite.new(2, 2, "上書きしますか？")
+    @@item_msg = Sprite.new(2, 8, "アイテム")
     @@yes = Sprite.new(3, 3, "はい")
     @@no = Sprite.new(3, 4, "いいえ")
     @@item_list = []
+    $player.item_list.length.times do |i|
+      @@item_list << Sprite.new(2, i + 9, "#{$player.item_list[i]}")
+    end
+    if $player.item_list.length == 0
+      @@item_list = Sprite.new(2, 9, "なし")
+    end
     @@dr_f = 0
   end
 
@@ -104,6 +111,7 @@ class Menu
         @@agility = Sprite.new(2, 6, "AGILITY #{$player.agility}")
       end
 
+
       if @@dr_f == 0
         @@cursol.y += 1 if Key.down?(Key::DOWN) && @@cursol.y < 3
         @@cursol.y -= 1 if Key.down?(Key::UP) && @@cursol.y > 1
@@ -121,6 +129,9 @@ class Menu
               @@dr_f = 4
             else
               open('data.txt', 'w'){ |f|
+                f.puts "#{Field.dis_flag}"
+                f.puts "#{Field.player.x}"
+                f.puts "#{Field.player.y}"
                 f.puts "#{$player.name}"
                 f.puts "#{$player.money}"
                 f.puts "#{$player.max_hp}"
@@ -130,7 +141,7 @@ class Menu
                 f.puts "#{$player.attack}"
                 f.puts "#{$player.block}"
                 f.puts "#{$player.agility}"
-                ($player.item_list).size.times do |i|
+                ($player.item_list).length.times do |i|
                   f.puts "#{$player.item_list[i]}"
                 end
               }
@@ -142,6 +153,9 @@ class Menu
         elsif @@dr_f == 4
           if @@cursol_2.y == 3
             open('data.txt', 'w'){ |f|
+              f.puts "#{Field.dis_flag}"
+              f.puts "#{Field.player.x}"
+              f.puts "#{Field.player.y}"
               f.puts "#{$player.name}"
               f.puts "#{$player.money}"
               f.puts "#{$player.max_hp}"
@@ -151,7 +165,7 @@ class Menu
               f.puts "#{$player.attack}"
               f.puts "#{$player.block}"
               f.puts "#{$player.agility}"
-              ($player.item_list).size.times do |i|
+              ($player.item_list).length.times do |i|
                 f.puts "#{$player.item_list[i]}"
               end
             }
@@ -171,7 +185,7 @@ class Menu
       if @@dr_f == 0
         @@display.draw([@@ste, @@save, @@end, @@cursol])
       elsif @@dr_f == 1
-        @@display.draw([@@money, @@hp, @@mp, @@attack, @@block, @@agility])
+        @@display.draw([@@money, @@hp, @@mp, @@attack, @@block, @@agility, @@item_msg, @@item_list])
       elsif @@dr_f == 2
         @@display.draw([@@sa_msg])
       elsif @@dr_f == 4

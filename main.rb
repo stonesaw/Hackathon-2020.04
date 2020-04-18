@@ -7,6 +7,8 @@ require_relative './scene-eitor'
 $enemies_data = open('./data/enemies.json') do |i|
   JSON.load(i)
 end
+
+$save_data = [0, 9, 9]
 require_relative './data/random-names'
 require_relative './data/items'
 

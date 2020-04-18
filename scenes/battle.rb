@@ -90,7 +90,15 @@ class Battle
       # 常に表示
       @@drawed = [@@show_enemy, @@show_player]
 
-      cursor_update()
+      if Key.down?(Key::UP) && @@cursor.y > @@com_attack.y
+        @@cursor.y -= @@com_escape.y - @@com_attack.y
+      elsif Key.down?(Key::DOWN) && @@cursor.y < @@com_escape.y
+        @@cursor.y += @@com_escape.y - @@com_attack.y
+      elsif Key.down?(Key::RIGHT) && @@cursor.x < @@com_ex.x - 2
+        @@cursor.x += @@com_escape.x - @@com_attack.x
+      elsif Key.down?(Key::LEFT) && @@cursor.x > @@com_attack.x - 2
+        @@cursor.x -= @@com_escape.x - @@com_attack.x
+      end
 
       if Key.down?(Key::RETURN)
         @@drawed << @@msg
@@ -164,6 +172,7 @@ class Battle
     # 行動 - 逃げる
     def escape
       puts "うまく逃げ切れた"
+      msg_draw()
       # To Scene-Field
       Scene.select(1, init: false)
       @@esc_enemy_attack = 1
@@ -191,6 +200,9 @@ class Battle
       @@esc_enemy_attack = 1
       @@msg.text = "#{text_control(@@enemy1.name)}を倒した"
       msg_draw()
+
+      $player.money += @@enemy1.money
+      $player.exp += @@enemy1.exp
       @@msg.text = ["#{text_control(@@enemy1.exp)}Exp,", 
                     "#{text_control(@@enemy1.money)}GOLDを手に入れた"]
       msg_draw()
@@ -202,8 +214,9 @@ class Battle
     def gameover
       @@msg.text = "ヤラレチャッタ！"
       msg_draw()
-      # To Scene-Title
-      Scene.select(0)
+      # To Scene-Field
+      $player.money /= 2
+      Scene.select(1, init: false)
     end
 
     def msg_draw(time = 20)
@@ -251,18 +264,6 @@ class Battle
         end
       end
       (width % 2) == 1 ? " " + text : text
-    end
-    
-    def cursor_update
-      if Key.down?(Key::UP) && @@cursor.y > @@com_attack.y
-        @@cursor.y -= @@com_escape.y - @@com_attack.y
-      elsif Key.down?(Key::DOWN) && @@cursor.y < @@com_escape.y
-        @@cursor.y += @@com_escape.y - @@com_attack.y
-      elsif Key.down?(Key::RIGHT) && @@cursor.x < @@com_ex.x - 2
-        @@cursor.x += @@com_escape.x - @@com_attack.x
-      elsif Key.down?(Key::LEFT) && @@cursor.x > @@com_attack.x - 2
-        @@cursor.x -= @@com_escape.x - @@com_attack.x
-      end
     end
   end
 end

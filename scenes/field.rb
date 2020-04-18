@@ -54,16 +54,20 @@ class Field
         @@player.y = @@castle.y + 1
       end
 
-      if @@dis_flag == 1 && @@player.x == @@castle.x && @@player.y == @@castle.y
+      if @@dis_flag == 1 && @@player === @@castle
         @@dis_flag = 0
         @@player.x = 9
         @@player.y = 19
       end
 
-      if @@dis_flag == 1 && @@player.x == @@shop.x && @@player.y == @@shop.y
+      if @@dis_flag == 1 && @@player === @@shop
         @@player.x = @@shop.x - 1
         # To Scene-Shop
         Scene.select(3, init: true)
+      end
+
+      if @@dis_flag == 1 && @@player === @@maou
+        Scene.select(4, init: true)
       end
 
       # To Scene-Battele
@@ -76,6 +80,10 @@ class Field
       else
         @@d_jie.draw([@@player, @@castle, @@maou, @@shop])
       end
+    end
+
+    def player
+      return @@player
     end
   end
 end

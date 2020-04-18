@@ -25,11 +25,10 @@ Scene.new([
 ])
 
 class Player
-  attr_accessor :name, :money, :hp, :max_hp, :mp, :max_mp, :attack, :block, :agility, :item_list
+  attr_accessor :name, :hp, :max_hp, :mp, :max_mp, :attack, :block, :agility, :money, :exp, :item_list
   
   def initialize(name)
     @name = name
-    @money = 1000
     @max_hp = 100
     @hp = 100
     @max_mp = 60
@@ -37,6 +36,8 @@ class Player
     @attack = 20
     @block = 10
     @agility = 20
+    @money = 1000
+    @exp = 0
     @item_list = []
   end
 end

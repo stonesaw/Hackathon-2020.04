@@ -1,7 +1,7 @@
 class Title
   def initialize
     @@display = Map.new(width: 20, height: 20, default_text: "・")
-    @@title = Sprite.new(3, 2, "ABE-QUET")
+    @@title = Sprite.new(3, 2, "AAABBBEEE-QUET")
     @@msg_start = "最初から"
     @@start = Sprite.new(4, 5, @@msg_start)
     @@msg_next = "続きから"

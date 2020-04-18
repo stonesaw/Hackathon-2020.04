@@ -50,6 +50,11 @@ class Title
                 $player.attack = f.gets.to_i
                 $player.block = f.gets.to_i
                 $player.agility = f.gets.to_i
+                item = f.gets
+                while item != nil
+                  $player.item_list << item
+                  item = f.gets
+                end
               }
               Scene.next(init: true)
             else

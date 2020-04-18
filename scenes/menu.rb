@@ -32,9 +32,16 @@ class Menu
     @@sa_msg = Sprite.new(1, 1, "セーブしました")
     @@sa_che_1 = Sprite.new(2, 1, "既存のセーブデータがあります。")
     @@sa_che_2 = Sprite.new(2, 2, "上書きしますか？")
+    @@item_msg = Sprite.new(2, 8, "アイテム")
     @@yes = Sprite.new(3, 3, "はい")
     @@no = Sprite.new(3, 4, "いいえ")
     @@item_list = []
+    $player.item_list.size.times do |i|
+      @@item_list << Sprite.new(2, i + 9, "#{$player.item_list[i]}")
+    end
+    if $player.item_list.size == 0
+      @@item_list = Sprite.new(2, 9, "なし")
+    end
     @@dr_f = 0
   end
 
@@ -103,6 +110,7 @@ class Menu
       else
         @@agility = Sprite.new(2, 6, "AGILITY #{$player.agility}")
       end
+
 
       if @@dr_f == 0
         @@cursol.y += 1 if Key.down?(Key::DOWN) && @@cursol.y < 3
@@ -177,7 +185,7 @@ class Menu
       if @@dr_f == 0
         @@display.draw([@@ste, @@save, @@end, @@cursol])
       elsif @@dr_f == 1
-        @@display.draw([@@money, @@hp, @@mp, @@attack, @@block, @@agility])
+        @@display.draw([@@money, @@hp, @@mp, @@attack, @@block, @@agility, @@item_msg, @@item_list])
       elsif @@dr_f == 2
         @@display.draw([@@sa_msg])
       elsif @@dr_f == 4

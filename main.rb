@@ -1,7 +1,18 @@
 #ruby -Ku
 
-require_relative './Monochrome-Ruby'
-require_relative './scene-eitor'
+require 'json' # usin './data/enemies.json'
+require "fileutils" # using './scenes/menu.rb'
+require_relative './Monochrome-Ruby' # メインのライブラリ
+require_relative './scene-eitor' # シーン用クラス
+require_relative './general-class' # 汎用クラス
+
+$enemies_data = open('./data/enemies.json') do |i|
+  JSON.load(i)
+end
+require_relative './data/items'
+require_relative './data/random-names'
+$save_data = [0, 9, 9]
+
 require_relative './scenes/title'
 require_relative './scenes/field'
 require_relative './scenes/menu'
@@ -15,14 +26,6 @@ Scene.new([
   Shop,
   Battle
 ])
-
-class Player
-  attr_accessor :name, :money, :hp, :max_hp, :attack, :mp, :max_mp
-  
-  def initialize(name)
-    @name = name
-  end
-end
 
 loop do
   Key.update

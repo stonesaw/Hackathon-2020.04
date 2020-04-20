@@ -1,4 +1,4 @@
-#ruby -Ku
+#! ruby -Ku
 
 require 'json' # usin './data/enemies.json'
 require "fileutils" # using './scenes/menu.rb'

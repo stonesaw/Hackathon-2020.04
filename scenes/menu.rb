@@ -1,5 +1,3 @@
-require "fileutils"
-
 class Menu
   def initialize
     @@display = Map.new(map: [
@@ -24,24 +22,32 @@ class Menu
       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
       [5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6]
     ], text_hash: {0 => "  ", 1 => "━━", 2 => "┃", 3 => "┏", 4 => "┓", 5 => "┗", 6 => "┛"})
-    @@ste = Sprite.new(2, 1, "ステータスの確認")
+    @@ste =  Sprite.new(2, 1, "ステータスの確認")
     @@save = Sprite.new(2, 2, "セーブ")
-    @@end = Sprite.new(2, 3, "終了")
-    @@cursol = Sprite.new(1, 1, "◎")
+    @@end =  Sprite.new(2, 3, "終了")
+    @@cursol =   Sprite.new(1, 1, "◎")
     @@cursol_2 = Sprite.new(2, 3, "◎")
-    @@sa_msg = Sprite.new(1, 1, "セーブしました")
+    @@sa_msg =   Sprite.new(1, 1, "セーブしました")
     @@sa_che_1 = Sprite.new(2, 1, "既存のセーブデータがあります。")
     @@sa_che_2 = Sprite.new(2, 2, "上書きしますか？")
-    @@item_msg = Sprite.new(2, 8, "アイテム")
+    @@item_msg = Sprite.new(2, 9, "-アイテム-")
     @@yes = Sprite.new(3, 3, "はい")
-    @@no = Sprite.new(3, 4, "いいえ")
+    @@no =  Sprite.new(3, 4, "いいえ")
     @@item_list = []
     $player.item_list.length.times do |i|
-      @@item_list << Sprite.new(2, i + 9, "#{$player.item_list[i]}")
+      name = Text.add($player.item_list[i]['name'], num: 16)
+      num = Text.insert($player.item_list[i]['num'], num: 2)
+      @@item_list << Sprite.new(2, (10 + i), "#{name}  ×  #{num}")
     end
     if $player.item_list.length == 0
       @@item_list = Sprite.new(2, 9, "なし")
     end
+    @@money =   Sprite.new(2, 2, "MONEY ")
+    @@hp =      Sprite.new(2, 3, "HP")
+    @@mp =      Sprite.new(2, 4, "MP")
+    @@attack =  Sprite.new(2, 5, "ATTACK")
+    @@block =   Sprite.new(2, 6, "BLOCK ")
+    @@agility = Sprite.new(2, 7, "AGILITY ")
     @@dr_f = 0
   end
 
@@ -49,68 +55,12 @@ class Menu
     def update
       system("cls")
 
-      if $player.money < 10
-        @@money = Sprite.new(2, 1, "MONEY      #{$player.money}")
-      elsif $player.money < 100
-        @@money = Sprite.new(2, 1, "MONEY     #{$player.money}")
-      elsif $player.money < 1000
-        @@money = Sprite.new(2, 1, "MONEY    #{$player.money}")
-      else
-        @@money = Sprite.new(2, 1, "MONEY   #{$player.money}")
-      end
-
-      
-      if $player.hp < 10
-        @@hp = Sprite.new(2, 2, "HP       #{$player.hp}")
-      elsif $player.hp < 100
-        @@hp = Sprite.new(2, 2, "HP        #{$player.hp}")
-      elsif $player.hp < 1000
-        @@hp = Sprite.new(2, 2, "HP       #{$player.hp}")
-      else
-        @@hp = Sprite.new(2, 2, "HP      #{$player.hp}")
-      end
-
-      
-      if $player.mp < 10
-        @@mp = Sprite.new(2, 3, "MP         #{$player.mp}")
-      elsif $player.mp < 100
-        @@mp = Sprite.new(2, 3, "MP        #{$player.mp}")
-      elsif $player.mp < 1000
-        @@mp = Sprite.new(2, 3, "MP       #{$player.mp}")
-      else
-        @@mp = Sprite.new(2, 3, "MP      #{$player.mp}")
-      end
-      
-      if $player.attack < 10
-        @@attack = Sprite.new(2, 4, "ATTACK     #{$player.attack}")
-      elsif $player.attack < 100
-        @@attack = Sprite.new(2, 4, "ATTACK    #{$player.attack}")
-      elsif $player.attack < 1000
-        @@attack = Sprite.new(2, 4, "ATTACK   #{$player.attack}")
-      else
-        @@attack = Sprite.new(2, 4, "ATTACK  #{$player.attack}")
-      end
-      
-      if $player.block < 10
-        @@block = Sprite.new(2, 5, "BLOCK      #{$player.block}")
-      elsif $player.block < 100
-        @@block = Sprite.new(2, 5, "BLOCK     #{$player.block}")
-      elsif $player.block < 1000
-        @@block = Sprite.new(2, 5, "BLOCK    #{$player.block}")
-      else
-        @@block = Sprite.new(2, 5, "BLOCK   #{$player.block}")
-      end
-      
-      if $player.agility < 10
-        @@agility = Sprite.new(2, 6, "AGILITY    #{$player.agility}")
-      elsif $player.agility < 100
-        @@agility = Sprite.new(2, 6, "AGILITY   #{$player.agility}")
-      elsif $player.agility < 1000
-        @@agility = Sprite.new(2, 6, "AGILITY  #{$player.agility}")
-      else
-        @@agility = Sprite.new(2, 6, "AGILITY #{$player.agility}")
-      end
-
+      @@money.text =   "MONEY   #{Text.insert($player.money, num: 4)}"
+      @@hp.text =      "HP      #{Text.insert($player.hp, num: 4)}"
+      @@mp.text =      "MP      #{Text.insert($player.mp, num: 4)}"
+      @@attack.text =  "ATTACK  #{Text.insert($player.attack, num: 4)}"
+      @@block.text =   "BLOCK   #{Text.insert($player.block, num: 4)}"
+      @@agility.text = "AGILITY #{Text.insert($player.agility, num: 4)}"
 
       if @@dr_f == 0
         @@cursol.y += 1 if Key.down?(Key::DOWN) && @@cursol.y < 3
@@ -121,14 +71,14 @@ class Menu
       end
 
       if Key.down?(Key::RETURN)
-        if (@@dr_f) == 0
+        if @@dr_f == 0
           if @@cursol.y == 1
             @@dr_f = 1
           elsif @@cursol.y == 2
-            if File.exist?("data.txt")
+            if File.exist?("./data/data.txt")
               @@dr_f = 4
             else
-              open('data.txt', 'w'){ |f|
+              open('./data/data.txt', 'w'){ |f|
                 f.puts "#{Field.dis_flag}"
                 f.puts "#{Field.player.x}"
                 f.puts "#{Field.player.y}"
@@ -152,7 +102,7 @@ class Menu
           end
         elsif @@dr_f == 4
           if @@cursol_2.y == 3
-            open('data.txt', 'w'){ |f|
+            open('./data/data.txt', 'w'){ |f|
               f.puts "#{Field.dis_flag}"
               f.puts "#{Field.player.x}"
               f.puts "#{Field.player.y}"

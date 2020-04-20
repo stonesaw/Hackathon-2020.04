@@ -1,13 +1,17 @@
 class Field
   def initialize
-    @@d_castle = Map.new(width: 20, height: 20, default_text:"・")
-    @@d_jie = Map.new(width: 20, height: 20, default_text:"・")
+    @@d_castle = Map.new(width: 20, height: 20, default_text:"!_")
+    @@d_jie = Map.new(width: 20, height: 20, default_text:" .")
     @@dis_flag = $save_data[0]
-    @@king = Sprite.new(9, 6, "王")
-    @@maou = Sprite.new(10, 19, "魔")
+    @@king =   Sprite.new(9, 6, "王")
+    @@maou =   Sprite.new(10, 19, "魔")
     @@player = Sprite.new($save_data[1], $save_data[2], "〇")
     @@castle = Sprite.new(10, 0, "城")
-    @@shop = Sprite.new(19, 0, "店")
+    @@shop =   Sprite.new(12, 8, "店")
+    @@road = []
+    (@@d_jie.height - 4).times do |i|
+      @@road << Sprite.new(10, 2 + i, "ll")
+    end
     @@wall = []
     @@d_castle.width.times do |i|
       @@wall << Sprite.new(i, 0, "■")
@@ -77,6 +81,14 @@ class Field
       # To Scene-Battele
       Scene.select(4, init: true) if Key.down?(Key::SPACE)
     end
+    
+    def draw
+      if @@dis_flag == 0
+        @@d_castle.draw([@@king, @@wall, @@player])
+      else
+        @@d_jie.draw([@@player, @@castle, @@maou, @@shop, @@road])
+      end
+    end
 
     def dis_flag
       @@dis_flag
@@ -84,18 +96,6 @@ class Field
 
     def player
       @@player
-    end
-
-    def draw
-      if @@dis_flag == 0
-        @@d_castle.draw([@@king, @@wall, @@player])
-      else
-        @@d_jie.draw([@@player, @@castle, @@maou, @@shop])
-      end
-    end
-
-    def player
-      return @@player
     end
 
     def enemy

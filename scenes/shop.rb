@@ -21,28 +21,31 @@ class Shop
       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11],
       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11],
       [5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6]
-    ], text_hash:{0 => "  ", 1 => "━━", 2 => "┃ ", 3 => "┏━", 4 => "━┓", 5 => "┗━", 6 => "━┛", 7 => "┣━", 8 =>"━┫", 9 => "┳━", 10 => "┻━", 11 => " ┃"})
+    ], text_hash:{0 => "  ", 1 => "━━", 2 => "┃ ", 
+                  3 => "┏━", 4 => "━┓", 5 => "┗━", 6 => "━┛", 
+                  7 => "┣━", 8 =>"━┫", 9 => "┳━", 10 => "┻━", 11 => " ┃"}
+    )
     @@list_size = 12
     name_ary = []
     value_ary = []
     @@list_size.times do |i|
-      name_ary << $item_list[i]['name'].to_s
+      name_ary << $item_list[i]['name']
       item_val = $item_list[i]['value']
-      value_ary << ((item_val.to_s.length % 2) == 0 ? " #{item_val} GOLD" : "  #{item_val} GOLD")
+      value_ary << (("#{item_val}".length % 2) == 0 ? " #{item_val} GOLD" : "  #{item_val} GOLD")
     end
-    @@item = Sprite.new(2, 1, name_ary)
+    @@item =  Sprite.new(2, 1, name_ary)
     @@money = Sprite.new(13, 1, value_ary)
     @@cursol = Sprite.new(1, 1, "◎")
-    @@m_have = Sprite.new(1, 14, "所持金   #{$player.money}GOLD")
-    @@m_value = Sprite.new(10, 14, "価格 #{$item_list[@@cursol.y - 1]["value"]}GOLD")
-    @@expla = Sprite.new(1, 15, $item_list[@@cursol.y - 1]["ex"])
-    @@eff_hp = Sprite.new(1, 16, "HP #{$item_list[@@cursol.y - 1]["effect"]["hp"]}")
-    @@eff_attack = Sprite.new(9, 16, "ATTACK #{$item_list[@@cursol.y - 1]["effect"]["attack"]}")
-    @@eff_mp = Sprite.new(1, 17, "MP#{$item_list[@@cursol.y - 1]["effect"]["mp"]}")
-    @@eff_block = Sprite.new(9, 17, "BLOCK#{$item_list[@@cursol.y - 1]["effect"]["block"]}")
+    @@m_have =  Sprite.new(1, 14, "所持金  GOLD")
+    @@m_value = Sprite.new(10, 14, "価格  GOLD")
+    @@expla =   Sprite.new(1, 15, "EX")
+    @@eff_hp =     Sprite.new(1, 16, "HP")
+    @@eff_attack = Sprite.new(9, 16, "ATTACK")
+    @@eff_mp =     Sprite.new(1, 17, "MP")
+    @@eff_block =  Sprite.new(9, 17, "BLOCK ")
     @@sel_msg = Sprite.new(1, 16, "購入しますか? ")
-    @@cho_y = Sprite.new(2, 17, "はい")
-    @@cho_n = Sprite.new(12, 17, "いいえ")
+    @@cho_y =   Sprite.new(2, 17, "はい")
+    @@cho_n =   Sprite.new(12, 17, "いいえ")
     @@cursol_2 = Sprite.new(1, 17, "〇")
     @@msg = Sprite.new(1, 18, "  ")
     @@sel_f = 0
@@ -88,29 +91,15 @@ class Shop
         end
       end
 
-      @@expla.text = $item_list[@@cursol.y - 1]["ex"]
-
-      if $player.money >= 1000
-        @@m_have.text = "所持金　#{$player.money}GOLD"
-      elsif $player.money >= 100
-        @@m_have.text = "所持金　 #{$player.money}GOLD"
-      elsif $player.money >= 10
-        @@m_have.text = "所持金　  #{$player.money}GOLD"
-      else
-        @@m_have.text = "所持金　   #{$player.money}GOLD"
-      end
-
-      if $item_list[@@cursol.y - 1]["value"] >= 1000
-        @@m_value.text = "価格　#{$item_list[@@cursol.y - 1]["value"]}GOLD"
-      else
-        @@m_value.text = "価格　 #{$item_list[@@cursol.y - 1]["value"]}GOLD"
-      end
+      @@expla.text =   $item_list[@@cursol.y - 1]["ex"]
+      @@m_have.text =  "所持金 #{Text.insert($player.money, num: 4)} GOLD"
+      @@m_value.text = "価格 #{Text.insert($item_list[@@cursol.y - 1]["value"], num: 4)} GOLD"
 
       if @@sel_f == 0
-        @@eff_hp.text = "HP    " + effect2text("hp")
-        @@eff_mp.text = "MP    " + effect2text("mp")
+        @@eff_hp.text =     "HP    " + effect2text("hp")
+        @@eff_mp.text =     "MP    " + effect2text("mp")
         @@eff_attack.text = "ATTACK" + effect2text("attack")
-        @@eff_block.text = "BLOCK " + effect2text("block")
+        @@eff_block.text =  "BLOCK " + effect2text("block")
       end
 
       Scene.select(1, init: false) if Key.down?(Key::ESCAPE)
@@ -150,6 +139,5 @@ class Shop
         $player.item_list << {'name' => name, 'num' => 1, 'data' => $item_list[@@cursol.y - 1]}
       end
     end
-
   end
 end
